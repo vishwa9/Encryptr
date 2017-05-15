@@ -14,7 +14,7 @@ module.exports = function(grunt) {
     },
     concat: {
       options: {
-        banner:  '<%= meta.banner %>' + '// GENERATED FILE - DO NOT EDIT\n\n' +
+        banner: '<%= meta.banner %>' + '// GENERATED FILE - DO NOT EDIT\n\n' +
           'window.app = { version: "<%= pkg.version %>" };\n\n'
       },
       dist: {
@@ -54,17 +54,66 @@ module.exports = function(grunt) {
     },
     copy: {
       main: {
-        files: [
-          {expand: true, flatten: true, src: ['components/font-awesome/css/*'], dest: 'www/components/font-awesome/css/'},
-          {expand: true, flatten: true, src: ['components/font-awesome/fonts/*'], dest: 'www/components/font-awesome/fonts/'},
-          {expand: true, flatten: true, src: ['components/moment/moment.js'], dest: 'www/components/moment/'},
-          {expand: true, flatten: true, src: ['node_modules/semver/semver.browser.js'], dest: 'www/components/semver'},
-          {expand: true, flatten: true, src: ['components/underscore/underscore*.js'], dest: 'www/components/underscore/'},
-          {expand: true, flatten: true, src: ['components/backstack/backstack*.js'], dest: 'www/components/backstack/'},
-          {expand: true, flatten: true, src: ['components/backbone/backbone*.js'], dest: 'www/components/backbone/'},
-          {expand: true, flatten: true, src: ['components/offline-js/offline.min.js'], dest: 'www/components/offline-js/'},
-          {expand: true, flatten: true, src: ['components/offline-js/themes/offline-theme-default.css'], dest: 'www/components/offline-js/themes/'},
-          {expand: true, flatten: true, src: ['components/fastclick/lib/fastclick.js'], dest: 'www/components/fastclick/'}
+        files: [{
+            expand: true,
+            flatten: true,
+            src: ['components/font-awesome/css/*'],
+            dest: 'www/components/font-awesome/css/'
+          },
+          {
+            expand: true,
+            flatten: true,
+            src: ['components/font-awesome/fonts/*'],
+            dest: 'www/components/font-awesome/fonts/'
+          },
+          {
+            expand: true,
+            flatten: true,
+            src: ['components/moment/moment.js'],
+            dest: 'www/components/moment/'
+          },
+          {
+            expand: true,
+            flatten: true,
+            src: ['node_modules/semver/semver.browser.js'],
+            dest: 'www/components/semver'
+          },
+          {
+            expand: true,
+            flatten: true,
+            src: ['components/underscore/underscore*.js'],
+            dest: 'www/components/underscore/'
+          },
+          {
+            expand: true,
+            flatten: true,
+            src: ['components/backstack/backstack*.js'],
+            dest: 'www/components/backstack/'
+          },
+          {
+            expand: true,
+            flatten: true,
+            src: ['components/backbone/backbone*.js'],
+            dest: 'www/components/backbone/'
+          },
+          {
+            expand: true,
+            flatten: true,
+            src: ['components/offline-js/offline.min.js'],
+            dest: 'www/components/offline-js/'
+          },
+          {
+            expand: true,
+            flatten: true,
+            src: ['components/offline-js/themes/offline-theme-default.css'],
+            dest: 'www/components/offline-js/themes/'
+          },
+          {
+            expand: true,
+            flatten: true,
+            src: ['components/fastclick/lib/fastclick.js'],
+            dest: 'www/components/fastclick/'
+          }
         ]
       }
     },
@@ -114,32 +163,28 @@ module.exports = function(grunt) {
       },
       // Some different reporters...
       mochaspec: {
-        command:
-          './node_modules/.bin/mocha-phantomjs www/tests.html',
+        command: './node_modules/.bin/mocha-phantomjs www/tests.html',
         options: {
           failOnError: true,
           stdout: true
         }
       },
       mochamin: {
-        command:
-          './node_modules/.bin/mocha-phantomjs -R min www/tests.html',
+        command: './node_modules/.bin/mocha-phantomjs -R min www/tests.html',
         options: {
           failOnError: true,
           stdout: true
         }
       },
       mochadot: {
-        command:
-          './node_modules/.bin/mocha-phantomjs -R dot www/tests.html',
+        command: './node_modules/.bin/mocha-phantomjs -R dot www/tests.html',
         options: {
           failOnError: true,
           stdout: true
         }
       },
       mochatap: {
-        command:
-          './node_modules/.bin/mocha-phantomjs -R tap www/tests.html',
+        command: './node_modules/.bin/mocha-phantomjs -R tap www/tests.html',
         options: {
           failOnError: true,
           stdout: true
@@ -191,6 +236,11 @@ module.exports = function(grunt) {
         src: ['./www/**/*'] // Your node-webkit app
       }
     },
+    serve: {
+      options: {
+        port: 9000
+      }
+    },
     jshint: {
       files: ['Gruntfile.js', 'src/*.js', 'src/**/*.js'],
       options: {
@@ -218,16 +268,17 @@ module.exports = function(grunt) {
     dot: {
       dist: {
         options: {
-          variable  : 'tmpl',
-          requirejs : false
+          variable: 'tmpl',
+          requirejs: false
         },
-        src  : ['tpl/**/*.html'],
-        dest : 'www/js/<%= pkg.name %>-templates.js'
+        src: ['tpl/**/*.html'],
+        dest: 'www/js/<%= pkg.name %>-templates.js'
       }
     }
   });
 
   grunt.loadNpmTasks('grunt-shell');
+  grunt.loadNpmTasks('grunt-serve');
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-dot-compiler');
@@ -244,6 +295,9 @@ module.exports = function(grunt) {
     grunt.task.run('jshint', 'dot', 'copy', 'concat', 'min');
     grunt.task.run('shell:mocha' + (which || 'spec'));
   });
+  // grunt.registerTask('serve', 'serve the project', function() {
+  //   grunt.task.run('serve');
+  // });
   grunt.registerTask('desktop', 'Build for desktop', function(which) {
     grunt.task.run('jshint', 'dot', 'copy', 'concat', 'min', 'shell:mochadot');
     if (which === 'release') {
@@ -253,7 +307,7 @@ module.exports = function(grunt) {
     }
   });
   grunt.registerTask('min', ['uglify']); // polyfil for uglify
-  grunt.registerTask('debug','Create a debug build', function(platform) {
+  grunt.registerTask('debug', 'Create a debug build', function(platform) {
     grunt.task.run('jshint', 'dot', 'copy', 'concat', 'min', 'shell:mochadot');
     if (platform === 'desktop') {
       grunt.task.run('nodewebkit:debug');
